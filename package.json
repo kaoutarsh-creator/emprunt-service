@@ -4,9 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+<<<<<<< HEAD
     "start": "node index.js",
     "dev": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+=======
+    "dev": "node index.js",
+    "start": "node index.js"
+>>>>>>> 4e8c288adfbfc0e4d75d72ad0679d672ebe5ce92
   },
   "keywords": [],
   "author": "",
@@ -19,4 +24,8 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.4.1"
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 4e8c288adfbfc0e4d75d72ad0679d672ebe5ce92
