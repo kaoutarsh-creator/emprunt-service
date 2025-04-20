@@ -1,20 +1,14 @@
 const token = localStorage.getItem("token");
-const logoutBtn = document.getElementById("logoutBtn");
-const empruntForm = document.getElementById("empruntForm");
-const messageDiv = document.getElementById("message");
-const searchBtn = document.getElementById("searchBtn");
-const empruntTableBody = document.getElementById("empruntTableBody");
 
 if (!token) {
   window.location.href = "/login.html";
 }
 
-logoutBtn.addEventListener("click", () => {
-  localStorage.removeItem("token");
-  window.location.href = "/login.html";
-});
+const form = document.getElementById("empruntForm");
+const messageDiv = document.getElementById("message");
+const tableBody = document.getElementById("empruntTable");
 
-empruntForm.addEventListener("submit", async (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const idClient = document.getElementById("idClient").value;
@@ -25,7 +19,7 @@ empruntForm.addEventListener("submit", async (e) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        Authorization: "Bearer " + token
       },
       body: JSON.stringify({ idClient, idLivre })
     });
@@ -34,7 +28,7 @@ empruntForm.addEventListener("submit", async (e) => {
 
     if (response.ok) {
       messageDiv.innerHTML = `<div class="message success">${data.message}</div>`;
-      empruntForm.reset();
+      loadEmprunts();
     } else {
       messageDiv.innerHTML = `<div class="message error">${data.message}</div>`;
     }
@@ -43,45 +37,31 @@ empruntForm.addEventListener("submit", async (e) => {
   }
 });
 
-searchBtn.addEventListener("click", async () => {
-  const clientId = document.getElementById("searchClientId").value;
-
-  if (!clientId) return;
-
+async function loadEmprunts() {
   try {
-    const response = await fetch(`/api/v1/emprunt/${clientId}`, {
-      method: "GET",
+    const response = await fetch("/api/v1/emprunt", {
       headers: {
-        "Authorization": `Bearer ${token}`
+        Authorization: "Bearer " + token
       }
     });
 
     const data = await response.json();
 
-    empruntTableBody.innerHTML = "";
+    tableBody.innerHTML = "";
 
-    if (response.ok && data.data.length > 0) {
-      data.data.forEach((item) => {
-        empruntTableBody.innerHTML += `
-          <tr>
-            <td>${item._id}</td>
-            <td>${item.idLivre}</td>
-            <td>${item.statut}</td>
-          </tr>
-        `;
-      });
-    } else {
-      empruntTableBody.innerHTML = `
+    data.data.forEach((e) => {
+      tableBody.innerHTML += `
         <tr>
-          <td colspan="3">Aucun emprunt trouvé</td>
+          <td>${e.idClient}</td>
+          <td>${e.idLivre}</td>
+          <td>${new Date(e.date).toLocaleDateString()}</td>
         </tr>
       `;
-    }
+    });
+
   } catch (error) {
-    empruntTableBody.innerHTML = `
-      <tr>
-        <td colspan="3">Erreur serveur</td>
-      </tr>
-    `;
+    console.error(error);
   }
-});
+}
+
+loadEmprunts();
