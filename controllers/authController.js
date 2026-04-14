@@ -27,3 +27,21 @@ export const login = async (req, res) => {
     });
   }
 };
+
+export const register = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    return res.status(201).json({
+      message: "Register successful",
+      user: {
+        email,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Register error",
+      error: error.message,
+    });
+  }
+};
